@@ -13,8 +13,7 @@ console.log(addExpenses.length);
 
 console.log(`Цель заработать за ${period} месяцев ${mission}$`);
 
-const arr = addExpenses.toLowerCase().split(', ');
-console.log(arr);
+console.log(addExpenses.toLowerCase().split(', '));
 
 let budgetDay = money / 30;
 console.log(budgetDay);
