@@ -16,44 +16,36 @@ showTypeOf(money);
 showTypeOf(income);
 showTypeOf(deposit);
 
-function getExpensesMonth() {
-    return `Расходы за месяц составят: ${amount1 + amount2}`;
+function getExpensesMonth(a, b) {
+    return `Расходы за месяц составят: ${a + b}`;
 }
-console.log(getExpensesMonth());
+console.log(getExpensesMonth(amount1, amount2));
 
 console.log(addExpenses.toLowerCase().split(', '));
 
-function getAccumulatedMonth() {
-    return money - amount1 - amount2;
+function getAccumulatedMonth(a, b, c) {
+    return a - b - c;
 }
 
-let accumulatedMonth = getAccumulatedMonth();
+let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
 
-function getTargetMonth() {
-    return `Цель будет достигнута за ${Math.ceil(mission / accumulatedMonth)} месяцев(-а)`;
+function getTargetMonth(a, b) {
+    return `Цель будет достигнута за ${Math.ceil(a / b)} месяцев(-а)`;
 }
-console.log(getTargetMonth());
+console.log(getTargetMonth(mission, accumulatedMonth));
 
 let budgetDay = Math.floor(accumulatedMonth / 30);
 console.log(`Бюджет на день ${budgetDay}`);
 
-/* let getStatusIncome = function () {
-    (budgetDay >= 1200) ? 'У вас высокий уровень дохода' :
-    (budgetDay >= 600 && budgetDay < 1200) ? 'У вас средний уровень дохода' :
-    (budgetDay >= 0 && budgetDay < 600) ? 'К сожалению у вас уровень дохода ниже среднего. Парам-парам, пам...' :
-    'Что то пошло не так';
-};
-console.log(getStatusIncome()); <-------- ПОЧЕМУ ЭТО НЕ РАБОТАЕТ?) */  
-
-let getStatusIncome = function () {
-    if (budgetDay >= 1200) {
+let getStatusIncome = function (a) {
+    if (a >= 1200) {
         return 'У вас высокий уровень дохода'
-    } else if (budgetDay >= 600 && budgetDay < 1200) {
+    } else if (a >= 600 && a < 1200) {
        return 'У вас средний уровень дохода'
-    } else if (budgetDay >= 0 && budgetDay < 600) {
+    } else if (a >= 0 && a < 600) {
         return 'К сожалению у вас уровень дохода ниже среднего. Парам-парам, пам...'
     } else {
     'Что то пошло не так'
     };
 };
-console.log(getStatusIncome());
+console.log(getStatusIncome(budgetDay));
