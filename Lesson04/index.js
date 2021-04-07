@@ -17,22 +17,22 @@ showTypeOf(income);
 showTypeOf(deposit);
 
 function getExpensesMonth(a, b) {
-    return `Расходы за месяц составят: ${a + b}`;
+    return a + b;
 }
-console.log(getExpensesMonth(amount1, amount2));
+console.log(`Расходы за месяц составят: ${getExpensesMonth(amount1, amount2)}`);
 
 console.log(addExpenses.toLowerCase().split(', '));
 
-function getAccumulatedMonth(a, b, c) {
-    return a - b - c;
+function getAccumulatedMonth(a) {
+    return a - getExpensesMonth(amount1, amount2);
 }
 
-let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
+let accumulatedMonth = getAccumulatedMonth(money);
 
 function getTargetMonth(a, b) {
-    return `Цель будет достигнута за ${Math.ceil(a / b)} месяцев(-а)`;
+    return a / b;
 }
-console.log(getTargetMonth(mission, accumulatedMonth));
+console.log(`Цель будет достигнута за ${Math.ceil(getTargetMonth(mission, accumulatedMonth))} месяцев(-а)`);
 
 let budgetDay = Math.floor(accumulatedMonth / 30);
 console.log(`Бюджет на день ${budgetDay}`);
