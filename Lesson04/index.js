@@ -25,11 +25,11 @@ console.log(addExpenses.toLowerCase().split(', '));
 
 let expensesMonth = getExpensesMonth(amount1, amount2);
 
-function getAccumulatedMonth(income) {
-    return income - expensesMonth;
+function getAccumulatedMonth(income, monthExpens) {
+    return income - monthExpens;
 }
 
-let accumulatedMonth = getAccumulatedMonth(money);
+let accumulatedMonth = getAccumulatedMonth(money, expensesMonth);
 
 function getTargetMonth(target, monthAccumulate) {
     return target / monthAccumulate;
