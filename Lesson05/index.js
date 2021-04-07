@@ -31,7 +31,8 @@ function getExpensesMonth(monthExpensesAmount) {
     for (let i = 0; i < 2; i++) {
         monthExpensesAmount[i] = prompt('Введите обязательную статью расходов', 'еда');
         do {
-            sum += +prompt('Во сколько это обойдется?', 150);
+            let necessarilyExpenseAmount = prompt('Во сколько это обойдется?', 150);
+            sum += +necessarilyExpenseAmount;
         }
         while (!isNumber(sum));
     }
