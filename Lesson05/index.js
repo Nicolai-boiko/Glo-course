@@ -42,11 +42,11 @@ console.log(`Расходы за месяц составят: ${expensesAmount}`
 
 console.log(addExpenses.toLowerCase().split(', '));
 
-function getAccumulatedMonth(income) {
-    return income - expensesAmount;
+function getAccumulatedMonth(income, monthExpens) {
+    return income - monthExpens;
 }
 
-let accumulatedMonth = getAccumulatedMonth(money);
+let accumulatedMonth = getAccumulatedMonth(money, expensesAmount);
 
 function getTargetMonth(target, monthAccumulate) {
     if ((target / monthAccumulate) >= 0) {
