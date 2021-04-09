@@ -37,31 +37,29 @@ let appData = {
             }
         })(appData.expenses);
     },
-    getExpensesMonth: function(expenses) {
-        let sum = 0;
-        for (let key in expenses) {
-           sum += +expenses[key];
+    getExpensesMonth: function() {
+        for (let key in appData.expenses) {
+            appData.expensesMonth += +appData.expenses[key];
         }
-        appData.expensesMonth = sum;
         console.log(`Расходы за месяц составят: ${appData.expensesMonth}`);
     },
-    getBudget: function (moneyIncome, monthExpens) {
-        appData.budgetMonth = moneyIncome - monthExpens;
+    getBudget: function () {
+        appData.budgetMonth = appData.budget - appData.expensesMonth;
         appData.budgetDay = Math.floor(appData.budgetMonth / 30);        
     },
-    getTargetMonth: function (target, monthAccumulate) {
-        if ((target / monthAccumulate) >= 0) {
-            console.log(`Цель будет достигнута за ${Math.ceil(target / monthAccumulate)} месяцев(-а)`);
-        } else if ((target / monthAccumulate) <= 0) {
+    getTargetMonth: function () {
+        if ((appData.mission / appData.budgetMonth) >= 0) {
+            console.log(`Цель будет достигнута за ${Math.ceil(appData.mission / appData.budgetMonth)} месяцев(-а)`);
+        } else if ((appData.mission / appData.budgetMonth) <= 0) {
             console.log(`Цель не будет достигнута`);
         }
     },
-    getStatusIncome: function (dayExpenses) {
-        if (dayExpenses >= 1200) {
+    getStatusIncome: function () {
+        if (appData.budgetDay >= 1200) {
             console.log('У вас высокий уровень дохода');
-        } else if (dayExpenses >= 600 && dayExpenses < 1200) {
+        } else if (appData.budgetDay >= 600 && appData.budgetDay < 1200) {
            console.log('У вас средний уровень дохода');
-        } else if (dayExpenses >= 0 && dayExpenses < 600) {
+        } else if (appData.budgetDay >= 0 && appData.budgetDay < 600) {
             console.log('К сожалению у вас уровень дохода ниже среднего. Парам-парам, пам...');
         } else {
             console.log('Что то пошло не так');
@@ -71,7 +69,7 @@ let appData = {
 };
 
 appData.asking();
-appData.getExpensesMonth(appData.expenses);
-appData.getBudget(appData.budget, appData.expensesMonth);
-appData.getTargetMonth(appData.mission, appData.budgetMonth);
-appData.getStatusIncome(appData.budgetDay);
+appData.getExpensesMonth();
+appData.getBudget();
+appData.getTargetMonth();
+appData.getStatusIncome();
