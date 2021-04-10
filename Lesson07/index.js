@@ -35,6 +35,7 @@ let appData = {
                 }
                 while (!isNumber(monthExpensesAmount[key]));
             }
+            console.log(appData.expenses);
         })(appData.expenses);
     },
     getExpensesMonth: function() {
@@ -65,6 +66,14 @@ let appData = {
             console.log('Что то пошло не так');
         };
     },
+    valuesInclude: function () {
+        let arr = [];
+        for (let k in appData) {
+            if (typeof(appData[k]) === 'function') continue;
+            arr.push(appData[k]);
+        }
+        console.log(`Наша программа включает в себя данные: ${arr.join('; ')}`);
+    }
 
 };
 
@@ -73,3 +82,4 @@ appData.getExpensesMonth();
 appData.getBudget();
 appData.getTargetMonth();
 appData.getStatusIncome();
+appData.valuesInclude();
