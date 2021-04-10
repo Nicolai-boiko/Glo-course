@@ -35,7 +35,6 @@ let appData = {
                 }
                 while (!isNumber(monthExpensesAmount[key]));
             }
-            console.log(appData.expenses);
         })(appData.expenses);
     },
     getExpensesMonth: function() {
@@ -70,6 +69,9 @@ let appData = {
         let arr = [];
         for (let k in appData) {
             if (typeof(appData[k]) === 'function') continue;
+            if (typeof(appData[k]) === 'object') {
+                appData[k] = JSON.stringify(appData[k])
+            }
             arr.push(appData[k]);
         }
         console.log(`Наша программа включает в себя данные: ${arr.join('; ')}`);
