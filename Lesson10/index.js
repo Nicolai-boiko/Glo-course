@@ -4,7 +4,7 @@ const advertising = document.querySelector('.adv');
 const body = document.querySelector('body');
 const liElementsBook2 = books[0].children[1].querySelectorAll('li');
 const liElementsBook5 = books[5].children[1].querySelectorAll('li');
-const ulElementBook6 = books[2].children[1];
+const liElementsBook6 = books[2].children[1].querySelectorAll('li');
 
 /* Восстановить порядок книг */
 booksWrapper.prepend(books[1]);
@@ -34,4 +34,4 @@ liElementsBook5[7].after(liElementsBook5[5]);
 /* Добавление главы в Книга 6*/
 let chapter = document.createElement('li');
 chapter.textContent = 'Глава 8: За пределами ES6';
-ulElementBook6.append(chapter);
+liElementsBook6[8].after(chapter);
