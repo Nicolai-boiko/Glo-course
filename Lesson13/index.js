@@ -196,6 +196,8 @@ let appData = {
         deletedExpenseItems.forEach(input => input.remove());
         let inputTypeText = document.querySelectorAll('input[type=text]');
         inputTypeText.forEach(input => input.removeAttribute("readonly"));
+        incomeAddButton.style.display = 'block';
+        expensesAddButton.style.display = 'block'
     },
 };
 calculate.addEventListener('click', () => {
