@@ -20,9 +20,10 @@ let expensesItems = document.querySelectorAll('.expenses-items');
 let incomeItems = document.querySelectorAll('.income-items');
 let periodAmount = document.querySelector('.period-amount');
 let periodSelect = document.querySelector('.period-select');
-let inputPlaceholderName = document.querySelectorAll('.income-title:not(.title), .additional_income-item, .expenses-title:not(.title)');
-let inputPlaceholderSum = document.querySelectorAll('.income-amount, .expenses-amount, .salary-amount, .target-amount');
 let cancel = document.querySelector('#cancel');
+let checkBox = document.querySelector('#deposit-check');
+let inputPlaceholderName;
+let inputPlaceholderSum;
 
 
 let isNumber = function (n) {
@@ -43,7 +44,6 @@ let appData = {
     percentDeposit: 0,
     moneyDeposit: 0,
     start: function () {
-        
         this.budget = +monthSalaryAmount.value;
 
         /* appData.getTargetMonth();
@@ -77,6 +77,7 @@ let appData = {
         if (expensesItems.length === 3) {
             expensesAddButton.style.display = 'none';
         }
+        this.validInput();
     },
     addIncomeBlock: function () {
         let cloneIncomeItem = incomeItems[0].cloneNode(true);
@@ -86,6 +87,7 @@ let appData = {
         if (incomeItems.length === 3) {
             incomeAddButton.style.display = 'none';
         }
+        this.validInput();
     },
     getExpenses: function () {
         expensesItems.forEach(item => {
@@ -180,7 +182,14 @@ let appData = {
             input.value = input.value.replace(regex, '');
         });
     },
+    validInput: function () {
+        inputPlaceholderName = document.querySelectorAll('.income-title:not(.title), .additional_income-item, .expenses-title:not(.title), .additional_expenses-item');
+            inputPlaceholderName.forEach(input => input.addEventListener('input', appData.inputNameValidation));
+            inputPlaceholderSum = document.querySelectorAll('.income-amount, .expenses-amount, .salary-amount, .target-amount');
+            inputPlaceholderSum.forEach(input => input.addEventListener('input', appData.inputSumValidation));
+    },
     reset: function () {
+        console.log(this);
         this.budgetMonth = 0;
         this.budgetDay = 0;
         this.expensesMonth = 0;
@@ -197,26 +206,25 @@ let appData = {
         let inputTypeText = document.querySelectorAll('input[type=text]');
         inputTypeText.forEach(input => input.removeAttribute("readonly"));
         incomeAddButton.style.display = 'block';
-        expensesAddButton.style.display = 'block'
+        expensesAddButton.style.display = 'block';
+        checkBox.checked = false;
     },
 };
-calculate.addEventListener('click', () => {
+calculate.addEventListener('click', function () {
     if (monthSalaryAmount.value === '') {
         alert('Поле "Месячный доход должно быть заполнено"');
         return;
     } else {
-        appData.start();
+        appData.start.call(appData);  //Я не вижу в этом смысла, потому что в данном случае это тоже самое что и appData.start(), но на всякий оставлю
         let inputTypeText = document.querySelectorAll('input[type=text]');
         inputTypeText.forEach(input => input.setAttribute("readonly", "readonly"));
         calculate.style.display = 'none';
         cancel.style.display = 'block';
     }
 });
-cancel.addEventListener('click', () => {
-    appData.reset()
-});
-expensesAddButton.addEventListener('click', appData.addExpensesBlock);
-incomeAddButton.addEventListener('click', appData.addIncomeBlock);
+cancel.addEventListener('click', appData.reset.bind(appData));
+expensesAddButton.addEventListener('click', appData.addExpensesBlock.bind(appData));
+incomeAddButton.addEventListener('click', appData.addIncomeBlock.bind(appData));
 periodSelect.addEventListener('input', appData.getPeriodAmout);
-inputPlaceholderName.forEach(input => input.addEventListener('input', appData.inputNameValidation));
-inputPlaceholderSum.forEach(input => input.addEventListener('input', appData.inputSumValidation));
+appData.validInput();
+
