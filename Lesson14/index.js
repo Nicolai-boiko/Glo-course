@@ -45,6 +45,7 @@ const AppData = function () {
     this.deposit = false;
     this.moneyDeposit = 0;
     this.percentDeposit = 0;
+    
 };
 
 AppData.prototype.start = function () {
@@ -57,9 +58,18 @@ AppData.prototype.start = function () {
     this.getExpensesMonth();
     this.getBudget();
     this.showResult();
+
+    if (monthSalaryAmount.value === '') {
+        alert('Поле "Месячный доход должно быть заполнено"');
+        return;
+    } else {
+        let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check');
+        inputTypeText.forEach(input => input.setAttribute("disabled", "true"));
+        calculate.style.display = 'none';
+        cancel.style.display = 'block';
+    }
 };
 AppData.prototype.showResult = function () {
-    const _this = this;
     budgetMonthValue.value = this.budgetMonth;
     budgetDayValue.value = this.budgetDay;
     expensesMonthValue.value = this.expensesMonth;
@@ -67,9 +77,9 @@ AppData.prototype.showResult = function () {
     additionalIncomeValue.value = this.addIncome.join(', ');
     targetMonthValue.value = Math.ceil(this.getTargetMonth());
     incomePeriodValue.value = this.calcSavedMoney();
-    periodSelect.addEventListener('change', function () {  //пришлось тут удалить стрелочную хотя с ней не пришлось бы делать кастыли из сохранения конеткста в переменную, так как у неё нет конткста......
-        incomePeriodValue.value = _this.calcSavedMoney();
-    });
+    periodSelect.addEventListener('change', function () {
+        incomePeriodValue.value = this.calcSavedMoney();
+    }.bind(this));
 };
 AppData.prototype.addExpensesBlock = function () {
     let cloneExpensesItem = expensesItems[0].cloneNode(true);
@@ -234,31 +244,18 @@ AppData.prototype.reset = function () {
     deletedIncomeItems.forEach(input => input.remove());
     let deletedExpenseItems = document.querySelectorAll('.expenses > div:nth-of-type(n+3)');
     deletedExpenseItems.forEach(input => input.remove());
-    let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check, .period-select');
+    let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check');
     inputTypeText.forEach(input => input.removeAttribute("disabled"));
     incomeAddButton.style.display = 'block';
     expensesAddButton.style.display = 'block';
     checkBox.checked = false;
 };
-
 AppData.prototype.eventListners = function () {
-    const _this = this;
-    calculate.addEventListener('click', () => {
-        if (monthSalaryAmount.value === '') {
-            alert('Поле "Месячный доход должно быть заполнено"');
-            return;
-        } else {
-            this.start();
-            let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check, .period-select');
-            inputTypeText.forEach(input => input.setAttribute("disabled", "true"));
-            calculate.style.display = 'none';
-            cancel.style.display = 'block';
-        }
-    });
-    cancel.addEventListener('click', this.reset.bind(_this));
-    expensesAddButton.addEventListener('click', this.addExpensesBlock.bind(_this));
-    incomeAddButton.addEventListener('click', this.addIncomeBlock.bind(_this));
-    periodSelect.addEventListener('input', this.getPeriodAmout.bind(_this));
+    calculate.addEventListener('click', this.start.bind(this));
+    cancel.addEventListener('click', this.reset.bind(this));
+    expensesAddButton.addEventListener('click', this.addExpensesBlock.bind(this));
+    incomeAddButton.addEventListener('click', this.addIncomeBlock.bind(this));
+    periodSelect.addEventListener('input', this.getPeriodAmout.bind(this));
     this.validInput();
 };
 
