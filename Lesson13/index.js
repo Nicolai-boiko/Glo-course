@@ -189,10 +189,19 @@ let appData = {
             inputPlaceholderSum.forEach(input => input.addEventListener('input', appData.inputSumValidation));
     },
     reset: function () {
-        console.log(this);
-        this.budgetMonth = 0;
+        this.budget = 0;
         this.budgetDay = 0;
+        this.budgetMonth = 0;
+        this.income = {};
+        this.incomeMonth = 0;
+        this.addIncome = [];
+        this.expenses = {};
         this.expensesMonth = 0;
+        this.addExpenses = [];
+        this.deposit = false;
+        this.moneyDeposit = 0;
+        this.percentDeposit = 0;
+
         periodSelect.value = 1;
         let inputClear = document.querySelectorAll('.income-title:not(.title), .additional_income-item, .additional_expenses-item, .expenses-title:not(.title), .result-total, .income-amount, .expenses-amount, .salary-amount, .target-amount');
         inputClear.forEach(input => input.value = '');
@@ -203,8 +212,8 @@ let appData = {
         deletedIncomeItems.forEach(input => input.remove());
         let deletedExpenseItems = document.querySelectorAll('.expenses > div:nth-of-type(n+3)');
         deletedExpenseItems.forEach(input => input.remove());
-        let inputTypeText = document.querySelectorAll('input[type=text]');
-        inputTypeText.forEach(input => input.removeAttribute("readonly"));
+        let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check, .period-select');
+        inputTypeText.forEach(input => input.removeAttribute("disabled"));
         incomeAddButton.style.display = 'block';
         expensesAddButton.style.display = 'block';
         checkBox.checked = false;
@@ -216,8 +225,8 @@ calculate.addEventListener('click', function () {
         return;
     } else {
         appData.start.call(appData);  //Я не вижу в этом смысла, потому что в данном случае это тоже самое что и appData.start(), но на всякий оставлю
-        let inputTypeText = document.querySelectorAll('input[type=text]');
-        inputTypeText.forEach(input => input.setAttribute("readonly", "readonly"));
+        let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check, .period-select');
+        inputTypeText.forEach(input => input.setAttribute("disabled", "true"));
         calculate.style.display = 'none';
         cancel.style.display = 'block';
     }
@@ -227,4 +236,3 @@ expensesAddButton.addEventListener('click', appData.addExpensesBlock.bind(appDat
 incomeAddButton.addEventListener('click', appData.addIncomeBlock.bind(appData));
 periodSelect.addEventListener('input', appData.getPeriodAmout);
 appData.validInput();
-
