@@ -102,8 +102,8 @@ class AppData {
     };
     getExpenses() {
         expensesItems.forEach(item => {
-            let itemExpenses = item.querySelector('.expenses-title').value;
-            let cashExpenses = item.querySelector('.expenses-amount').value;
+            const itemExpenses = item.querySelector('.expenses-title').value;
+            const cashExpenses = item.querySelector('.expenses-amount').value;
             if (itemExpenses !== '' && cashExpenses !== '') {
                 this.expenses[itemExpenses] = cashExpenses;
             }
@@ -111,8 +111,8 @@ class AppData {
     };
     getIncome() {
         incomeItems.forEach(item => {
-            let itemIncome = item.querySelector('.income-title').value;
-            let cashIncome = item.querySelector('.income-amount').value;
+            const itemIncome = item.querySelector('.income-title').value;
+            const cashIncome = item.querySelector('.income-amount').value;
             if (itemIncome !== '' && cashIncome !== '') {
                 this.income[itemIncome] = cashIncome;
             }
