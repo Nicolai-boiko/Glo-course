@@ -1,9 +1,7 @@
 window.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
-    function addZero(x) {
-        return (parseInt(x, 10) < 10 && parseInt(x, 10) >= 0 ? '0' : '') + x;
-    }
+    
 
 
     // Timer
@@ -26,8 +24,11 @@ window.addEventListener('DOMContentLoaded', function() {
             return {timeRemaining, hours, minutes, seconds, days}
         }
         function updateClock() {
+            function addZero(x) {
+                return (parseInt(x, 10) < 10 && parseInt(x, 10) >= 0 ? '0' : '') + x;
+            }
             let timer = getTimeRemaining();
-            if (timer.seconds < 0) {
+            if (timer.timeRemaining < 0) {
                 timerNumbers.forEach(num => num.style.color = 'red');
                 timerHours.textContent = '00';
                 timerMinutes.textContent = '00';
