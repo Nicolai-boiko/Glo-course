@@ -56,6 +56,10 @@ class AppData {
         } else if(depositCheck.checked && depositBank.value !== '' && (depositAmount.value === '' || depositPercent.value === '')){
             alert('Введите сумму депозита или процент');
         } else {
+            if (depositCheck.checked && depositBank.value === '') {
+                depositCheck.checked = !depositCheck.checked;
+                this.depositHandler();
+            }
             this.budget = +monthSalaryAmount.value;
     
             this.getAddExpenses();
