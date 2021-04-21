@@ -50,26 +50,30 @@ class AppData {
     }
 
     start() {
-        this.budget = +monthSalaryAmount.value;
-
-        this.getAddExpenses();
-        this.getAddIncome();
-        this.getExpenses();
-        this.getIncome();
-        this.getExpensesMonth();
-        this.getInfoDeposit();
-        this.getBudget();
-        this.showResult();
-
+        
         if (monthSalaryAmount.value === '') {
-            alert('Поле "Месячный доход должно быть заполнено"');
-            return;
+            alert('Поле "Месячный доход" должно быть заполнено');
+        } else if(depositCheck.checked && depositBank.value !== '' && (depositAmount.value === '' || depositPercent.value === '')){
+            alert('Введите сумму депозита или процент');
         } else {
+            this.budget = +monthSalaryAmount.value;
+    
+            this.getAddExpenses();
+            this.getAddIncome();
+            this.getExpenses();
+            this.getIncome();
+            this.getExpensesMonth();
+            this.getInfoDeposit();
+            this.getBudget();
+            this.showResult();
             let inputTypeText = document.querySelectorAll('input[type=text], .btn_plus, #deposit-check');
             inputTypeText.forEach(input => input.setAttribute("disabled", "true"));
             calculate.style.display = 'none';
             cancel.style.display = 'block';
         }
+    };
+    depositValidation(){
+        depositBank.value === '' ? depositAmount.setAttribute("disabled", "true") : depositAmount.removeAttribute("disabled");
     };
     showResult() {
         budgetMonthValue.value = this.budgetMonth;
@@ -245,6 +249,7 @@ class AppData {
         if (depositCheck.checked) {
             depositBank.style.display = 'inline-block';
             depositAmount.style.display = 'inline-block';
+            depositAmount.setAttribute("disabled", "true")
             this.deposit = true;
             depositBank.addEventListener('change', this.changePercent);
         } else {
@@ -264,6 +269,7 @@ class AppData {
         incomeAddButton.addEventListener('click', this.addIncomeBlock.bind(this));
         periodSelect.addEventListener('input', this.getPeriodAmout.bind(this));
         depositCheck.addEventListener('change', this.depositHandler.bind(this));
+        depositBank.addEventListener('change', this.depositValidation.bind(this));
         this.validInput();
     };
 };
