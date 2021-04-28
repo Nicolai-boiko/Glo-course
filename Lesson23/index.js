@@ -313,6 +313,9 @@ window.addEventListener('DOMContentLoaded', function() {
                 const regexpText = /[^а-яА-Яa-zA-Z\s]/g;
                 e.target.value = e.target.value.replace(regexpText, '');
             } else if (e.target.id === 'form2-email') {
+                let validEmail = e.target.value;
+                e.target.value = '';
+                e.target.value = validEmail;
                 const regexpEmail = /[^a-zA-Z-@_.!~*']/g;
                 e.target.value = e.target.value.replace(regexpEmail, '');
                 e.target.value = e.target.value.replace(/-{2,}/, '-');
@@ -326,12 +329,13 @@ window.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('input', (e) => validForm (e));
         inputs.forEach(input => input.addEventListener('blur', (e) => {
             validForm (e)
-            if (e.target.value !== '' && e.target.id !== 'form2-email') {
+            if (e.target.id !== 'form2-email') {
                 e.target.value = e.target.value.trim();
-                e.target.value = e.target.value.replace(/\s{2,}/, ' ');
-                e.target.value = e.target.value[0].toUpperCase() + e.target.value.slice(1).toLowerCase();
-            } else if (e.target.id === 'form2-email') {
-                e.target.value = e.target.value.replace(/\s{2,}/, ' ');
+                if(e.target.value !== ''){
+                    e.target.value = e.target.value.replace(/\s{2,}/, ' ');
+                    e.target.value = e.target.value[0].toUpperCase() + e.target.value.slice(1).toLowerCase();
+                }
+            } else {
                 e.target.value = e.target.value.replace(/(^-|-$)/g, '')
                 e.target.value = e.target.value.replace(/^\./g, '')
             };
