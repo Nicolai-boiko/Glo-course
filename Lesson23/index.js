@@ -280,4 +280,62 @@ window.addEventListener('DOMContentLoaded', function() {
         startSlide(4000);
     }
     slider();
+
+    //Смена фоток
+    const changePhoto = () => {
+        const photos = document.querySelectorAll('.command__photo');
+        photos.forEach(photo => {
+            let photoSrc = photo.src;
+            photo.addEventListener('mouseover', () => photo.src = photo.dataset.img);
+            photo.addEventListener('mouseout', () => photo.src = photoSrc);
+        })
+    }
+    changePhoto();
+
+    //Валидация
+    const validation = () => {
+        //Инпуты калькулятора
+        const calcInputs = document.querySelectorAll('.calc-item');
+
+        const regexp = /\D/gi;
+        calcInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(regexp, '');
+            })
+        })
+
+        //Форма 2 в конце
+        const form = document.querySelector('.footer-form-input');
+        const inputs = document.querySelectorAll('.footer-form-input > .row > div > input');  /* :not(#form2-email) */
+
+        function validForm (e) {
+            if (e.target.id === 'form2-name' || e.target.id === 'form2-message') {
+                const regexpText = /[^а-яА-Яa-zA-Z\s]/g;
+                e.target.value = e.target.value.replace(regexpText, '');
+            } else if (e.target.id === 'form2-email') {
+                const regexpEmail = /[^a-zA-Z-@_.!~*']/g;
+                e.target.value = e.target.value.replace(regexpEmail, '');
+                e.target.value = e.target.value.replace(/-{2,}/, '-');
+                e.target.value = e.target.value.replace(/\.{2,}/, '.');
+            } else if (e.target.id === 'form2-phone') {
+                const regexpPhone = /[^0-9()-]/g;
+                e.target.value = e.target.value.replace(regexpPhone, '');
+            }
+        }
+
+        form.addEventListener('input', (e) => validForm (e));
+        inputs.forEach(input => input.addEventListener('blur', (e) => {
+            validForm (e)
+            if (e.target.value !== '' && e.target.id !== 'form2-email') {
+                e.target.value = e.target.value.trim();
+                e.target.value = e.target.value.replace(/\s{2,}/, ' ');
+                e.target.value = e.target.value[0].toUpperCase() + e.target.value.slice(1).toLowerCase();
+            } else if (e.target.id === 'form2-email') {
+                e.target.value = e.target.value.replace(/\s{2,}/, ' ');
+                e.target.value = e.target.value.replace(/(^-|-$)/g, '')
+                e.target.value = e.target.value.replace(/^\./g, '')
+            };
+        }));
+    }
+    validation();
 });
