@@ -294,25 +294,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
     //Валидация
     const validation = () => {
-        //Инпуты калькулятора
-        const calcInputs = document.querySelectorAll('.calc-item');
-
-        const regexp = /\D/gi;
-        calcInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                input.value = input.value.replace(regexp, '');
-            })
-        })
-
-        //Форма 2 в конце
-        const form = document.querySelector('.footer-form-input');
-        const inputs = document.querySelectorAll('.footer-form-input > .row > div > input');  /* :not(#form2-email) */
+        
+        const body = document.querySelector('body');
+        const inputs = document.querySelectorAll('.footer-form-input > .row > div > input, .main-form-input > .row > div > input');
 
         function validForm (e) {
-            if (e.target.id === 'form2-name' || e.target.id === 'form2-message') {
+            if (e.target.type === 'text') {
                 const regexpText = /[^а-яА-Яa-zA-Z\s]/g;
                 e.target.value = e.target.value.replace(regexpText, '');
-            } else if (e.target.id === 'form2-email') {
+            } else if (e.target.type === 'email') {
                 let validEmail = e.target.value;
                 e.target.value = '';
                 e.target.value = validEmail;
@@ -320,16 +310,19 @@ window.addEventListener('DOMContentLoaded', function() {
                 e.target.value = e.target.value.replace(regexpEmail, '');
                 e.target.value = e.target.value.replace(/-{2,}/, '-');
                 e.target.value = e.target.value.replace(/\.{2,}/, '.');
-            } else if (e.target.id === 'form2-phone') {
+            } else if (e.target.type === 'tel') {
                 const regexpPhone = /[^0-9()-]/g;
                 e.target.value = e.target.value.replace(regexpPhone, '');
+            } else if (e.target.type === 'number') {
+                const regexpCalc = /\D/gi;
+                e.target.value = e.target.value.replace(regexpCalc, '');
             }
         }
 
-        form.addEventListener('input', (e) => validForm (e));
+        body.addEventListener('input', (e) => validForm (e));
         inputs.forEach(input => input.addEventListener('blur', (e) => {
             validForm (e)
-            if (e.target.id !== 'form2-email') {
+            if (e.target.type !== 'email') {
                 e.target.value = e.target.value.trim();
                 if(e.target.value !== ''){
                     e.target.value = e.target.value.replace(/\s{2,}/, ' ');
