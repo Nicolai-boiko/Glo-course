@@ -312,6 +312,9 @@ window.addEventListener('DOMContentLoaded', function() {
                 e.target.value = e.target.value.replace(/\.{2,}/, '.');
             } else if (e.target.type === 'tel') {
                 const regexpPhone = /[^0-9()-]/g;
+                e.target.value = e.target.value.replace(/-{2,}/, '-');
+                e.target.value = e.target.value.replace(/\({2,}/, '(');
+                e.target.value = e.target.value.replace(/\){2,}/, ')');
                 e.target.value = e.target.value.replace(regexpPhone, '');
             } else if (e.target.type === 'number') {
                 const regexpCalc = /\D/gi;
