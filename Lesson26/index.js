@@ -298,6 +298,46 @@ window.addEventListener('DOMContentLoaded', function() {
         const body = document.querySelector('body');
         const inputs = document.querySelectorAll('.footer-form-input > .row > div > input, .main-form-input > .row > div > input');
 
+        function maskPhone(selector, masked = '+7 (___) ___-__-__') {
+            const elems = document.querySelectorAll(selector);
+        
+            function mask(event) {
+                const keyCode = event.keyCode;
+                const template = masked,
+                    def = template.replace(/\D/g, ""),
+                    val = this.value.replace(/\D/g, "");
+                console.log(template);
+                let i = 0,
+                    newValue = template.replace(/[_\d]/g, function (a) {
+                        return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
+                    });
+                i = newValue.indexOf("_");
+                if (i != -1) {
+                    newValue = newValue.slice(0, i);
+                }
+                let reg = template.substr(0, this.value.length).replace(/_+/g,
+                    function (a) {
+                        return "\\d{1," + a.length + "}";
+                    }).replace(/[+()]/g, "\\$&");
+                reg = new RegExp("^" + reg + "$");
+                if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
+                    this.value = newValue;
+                }
+                if (event.type == "blur" && this.value.length < 5) {
+                    this.value = "";
+                }
+        
+            }
+        
+            for (const elem of elems) {
+                elem.addEventListener("input", mask);
+                elem.addEventListener("focus", mask);
+                elem.addEventListener("blur", mask);
+            }
+            
+        }
+        maskPhone('.form-phone');
+
         function validForm (e) {
             if (e.target.name === 'user_name') {
                 const regexpText = /[^а-яА-Я\s]/g;
@@ -313,52 +353,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 e.target.value = e.target.value.replace(regexpEmail, '');
                 e.target.value = e.target.value.replace(/-{2,}/, '-');
                 e.target.value = e.target.value.replace(/\.{2,}/, '.');
-            } else if (e.target.type === 'tel') {
-                function maskPhone(selector, masked = '+7 (___) ___-__-__') {
-                    const elems = document.querySelectorAll(selector);
-                
-                    function mask(event) {
-                        const keyCode = event.keyCode;
-                        const template = masked,
-                            def = template.replace(/\D/g, ""),
-                            val = this.value.replace(/\D/g, "");
-                        console.log(template);
-                        let i = 0,
-                            newValue = template.replace(/[_\d]/g, function (a) {
-                                return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
-                            });
-                        i = newValue.indexOf("_");
-                        if (i != -1) {
-                            newValue = newValue.slice(0, i);
-                        }
-                        let reg = template.substr(0, this.value.length).replace(/_+/g,
-                            function (a) {
-                                return "\\d{1," + a.length + "}";
-                            }).replace(/[+()]/g, "\\$&");
-                        reg = new RegExp("^" + reg + "$");
-                        if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
-                            this.value = newValue;
-                        }
-                        if (event.type == "blur" && this.value.length < 5) {
-                            this.value = "";
-                        }
-                
-                    }
-                
-                    for (const elem of elems) {
-                        elem.addEventListener("input", mask);
-                        elem.addEventListener("focus", mask);
-                        elem.addEventListener("blur", mask);
-                    }
-                    
-                }
-                maskPhone('.form-phone');
-
-                /* const regexpPhone = /[^0-9+()-]/g;
-                e.target.value = e.target.value.replace(/-{2,}/, '-');
-                e.target.value = e.target.value.replace(/\({2,}/, '(');
-                e.target.value = e.target.value.replace(/\){2,}/, ')');
-                e.target.value = e.target.value.replace(regexpPhone, ''); */
             } else if (e.target.type === 'number') {
                 const regexpCalc = /\D/gi;
                 e.target.value = e.target.value.replace(regexpCalc, '');
@@ -435,12 +429,32 @@ window.addEventListener('DOMContentLoaded', function() {
 
     //send-ajax-form
     const sendForm = () => {
+        
         const forms = document.querySelectorAll('form');
         
         const errorMesage = 'Что то пошло не так';
         const successMesage = 'Спасибо! Мы скоро свяжемся с вами!';
                 
         const statusMessage = document.createElement('div');
+
+        const postData = (body) => {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) return;
+                if (request.status === 200) {
+                    resolve();
+                } else {
+                    reject(request.status);
+                }
+            })
+
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(body));
+            })
+        }
         
         forms.forEach(form => form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -460,8 +474,8 @@ window.addEventListener('DOMContentLoaded', function() {
             formData.forEach((val, key) => {
                 body[key] = val;
             })
-            postData(body, 
-                () => {
+            postData(body)
+                .then(() => {
                     statusMessage.style.cssText = 'font-size: 2rem; color: #fff';
                     statusMessage.innerHTML = successMesage;
                     let inputs = form.querySelectorAll('input');
@@ -470,25 +484,9 @@ window.addEventListener('DOMContentLoaded', function() {
                 (error) => {
                     statusMessage.innerHTML = errorMesage;
                     console.error(error);
-                }
-            );
+                })
+                .catch(error => console.log(error));
         }));
-        const postData = (body, outputData, errorData) => {
-            const request = new XMLHttpRequest();
-
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) return;
-                if (request.status === 200) {
-                    outputData();
-                } else {
-                    errorData(request.status);
-                }
-            })
-
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(body));
-        }
     }
     sendForm();
 });
