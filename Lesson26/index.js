@@ -314,11 +314,51 @@ window.addEventListener('DOMContentLoaded', function() {
                 e.target.value = e.target.value.replace(/-{2,}/, '-');
                 e.target.value = e.target.value.replace(/\.{2,}/, '.');
             } else if (e.target.type === 'tel') {
-                const regexpPhone = /[^0-9+]/g;
-                /* e.target.value = e.target.value.replace(/-{2,}/, '-');
+                function maskPhone(selector, masked = '+7 (___) ___-__-__') {
+                    const elems = document.querySelectorAll(selector);
+                
+                    function mask(event) {
+                        const keyCode = event.keyCode;
+                        const template = masked,
+                            def = template.replace(/\D/g, ""),
+                            val = this.value.replace(/\D/g, "");
+                        console.log(template);
+                        let i = 0,
+                            newValue = template.replace(/[_\d]/g, function (a) {
+                                return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
+                            });
+                        i = newValue.indexOf("_");
+                        if (i != -1) {
+                            newValue = newValue.slice(0, i);
+                        }
+                        let reg = template.substr(0, this.value.length).replace(/_+/g,
+                            function (a) {
+                                return "\\d{1," + a.length + "}";
+                            }).replace(/[+()]/g, "\\$&");
+                        reg = new RegExp("^" + reg + "$");
+                        if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) {
+                            this.value = newValue;
+                        }
+                        if (event.type == "blur" && this.value.length < 5) {
+                            this.value = "";
+                        }
+                
+                    }
+                
+                    for (const elem of elems) {
+                        elem.addEventListener("input", mask);
+                        elem.addEventListener("focus", mask);
+                        elem.addEventListener("blur", mask);
+                    }
+                    
+                }
+                maskPhone('.form-phone');
+
+                /* const regexpPhone = /[^0-9+()-]/g;
+                e.target.value = e.target.value.replace(/-{2,}/, '-');
                 e.target.value = e.target.value.replace(/\({2,}/, '(');
-                e.target.value = e.target.value.replace(/\){2,}/, ')'); */
-                e.target.value = e.target.value.replace(regexpPhone, '');
+                e.target.value = e.target.value.replace(/\){2,}/, ')');
+                e.target.value = e.target.value.replace(regexpPhone, ''); */
             } else if (e.target.type === 'number') {
                 const regexpCalc = /\D/gi;
                 e.target.value = e.target.value.replace(regexpCalc, '');
@@ -398,16 +438,13 @@ window.addEventListener('DOMContentLoaded', function() {
         const forms = document.querySelectorAll('form');
         
         const errorMesage = 'Что то пошло не так';
-        const loadMessage = 'Загрузка...';
         const successMesage = 'Спасибо! Мы скоро свяжемся с вами!';
                 
         const statusMessage = document.createElement('div');
         
         forms.forEach(form => form.addEventListener('submit', (e) => {
             e.preventDefault();
-            form.appendChild(statusMessage);
-            statusMessage.innerHTML = loadMessage;
-            /* statusMessage.innerHTML = `
+            statusMessage.innerHTML = `
             <div class="spinner">
                 <div class="rect1"></div>
                 <div class="rect2"></div>
@@ -415,7 +452,8 @@ window.addEventListener('DOMContentLoaded', function() {
                 <div class="rect4"></div>
                 <div class="rect5"></div>
             </div>
-            `; */
+            `;
+            form.appendChild(statusMessage);
 
             const formData = new FormData(form);
             let body = {};
