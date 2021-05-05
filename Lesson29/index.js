@@ -306,7 +306,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 const template = masked,
                     def = template.replace(/\D/g, ""),
                     val = this.value.replace(/\D/g, "");
-                console.log(template);
                 let i = 0,
                     newValue = template.replace(/[_\d]/g, function (a) {
                         return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
@@ -349,7 +348,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 let validEmail = e.target.value;
                 e.target.value = '';
                 e.target.value = validEmail;
-                const regexpEmail = /[^a-zA-Z-@_.!~*']/g;
+                const regexpEmail = /[^a-zA-Z0-9-@_.!~*']/g;
                 e.target.value = e.target.value.replace(regexpEmail, '');
                 e.target.value = e.target.value.replace(/-{2,}/, '-');
                 e.target.value = e.target.value.replace(/\.{2,}/, '.');
@@ -438,21 +437,12 @@ window.addEventListener('DOMContentLoaded', function() {
         const statusMessage = document.createElement('div');
 
         const postData = (body) => {
-            return new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
-
-                request.addEventListener('readystatechange', () => {
-                    if (request.readyState !== 4) return;
-                    if (request.status === 200) {
-                        resolve();
-                    } else {
-                        reject(request.status);
-                    }
-                })
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.send(JSON.stringify(body));
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             })
         }
         
@@ -475,17 +465,19 @@ window.addEventListener('DOMContentLoaded', function() {
                 body[key] = val;
             })
             postData(body)
-                .then(() => {
+                .then((response) => {
+                    if (response.status !== 200){
+                        throw new Error('Все пропало!')
+                    }
                     statusMessage.style.cssText = 'font-size: 2rem; color: #fff';
                     statusMessage.innerHTML = successMesage;
                     let inputs = form.querySelectorAll('input');
                     inputs.forEach(input => input.value = '');
-                }, 
-                (error) => {
-                    statusMessage.innerHTML = errorMesage;
-                    console.error(error);
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    statusMessage.innerHTML = errorMesage;
+                    console.log(error)
+                });
         }));
     }
     sendForm();
