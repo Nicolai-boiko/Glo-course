@@ -44,6 +44,11 @@ const validation = () => {
 
     function validForm (e) {
         if (e.target.name === 'user_name') {
+            if (e.target.value.length < 3) {
+                e.target.setCustomValidity('Имя не может быть короче 3 букв')
+            } else {
+                e.target.setCustomValidity('');
+            }
             const regexpText = /[^а-яА-Я\s]/g;
             e.target.value = e.target.value.replace(regexpText, '');
         } else if (e.target.name === 'user_message') {
@@ -60,6 +65,12 @@ const validation = () => {
         } else if (e.target.type === 'number') {
             const regexpCalc = /\D/gi;
             e.target.value = e.target.value.replace(regexpCalc, '');
+        } else if (e.target.type === 'tel') {
+            if (e.target.value.length < 18) {
+                e.target.setCustomValidity('Не полный номер телефона')
+            } else {
+                e.target.setCustomValidity('');
+            }
         }
     }
 
